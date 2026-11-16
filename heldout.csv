@@ -1,0 +1,11 @@
+id,level,question,gold_sql
+1,easy,How many customers signed up from Europe?,SELECT COUNT(*) FROM customers WHERE region='Europe'
+2,easy,How many successful payments were made in total?,SELECT COUNT(*) FROM payments WHERE status='success'
+3,easy,What is the earliest customer signup date?,SELECT MIN(signup_date) FROM customers
+4,medium,How much revenue did each region generate from successful payments?,"SELECT c.region, SUM(p.amount) FROM payments p JOIN customers c ON p.customer_id=c.customer_id WHERE p.status='success' GROUP BY c.region"
+5,medium,How many customers downgraded from Enterprise to Basic?,SELECT COUNT(DISTINCT customer_id) FROM plan_changes WHERE old_plan='Enterprise' AND new_plan='Basic'
+6,medium,What is the total expansion MRR in 2025?,SELECT SUM(total_mrr_delta) FROM vw_mrr_waterfall_summary WHERE movement_type='Expansion' AND YEAR(month_start)=2025
+7,medium,How many failed payments did each acquisition channel have?,"SELECT c.acquisition_channel, COUNT(*) FROM payments p JOIN customers c ON p.customer_id=c.customer_id WHERE p.status='failed' GROUP BY c.acquisition_channel"
+8,hard,"Which plan has the most active customers, and what is its average MRR?","SELECT plan, COUNT(DISTINCT customer_id), AVG(mrr_amount) FROM subscriptions WHERE status='active' GROUP BY plan ORDER BY COUNT(DISTINCT customer_id) DESC LIMIT 1"
+9,hard,"What percentage of payments failed in each year, rounded to 1 decimal place?","SELECT YEAR(payment_date), ROUND(100*SUM(status='failed')/COUNT(*),1) FROM payments GROUP BY YEAR(payment_date)"
+10,hard,What is the largest number of customers who signed up in a single month?,"SELECT MAX(c) FROM (SELECT COUNT(*) AS c FROM customers GROUP BY DATE_FORMAT(signup_date,'%Y-%m')) t"
